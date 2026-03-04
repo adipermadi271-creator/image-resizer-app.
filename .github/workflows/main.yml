@@ -10,21 +10,27 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo6 cmake libffi-dev libssl-dev
+          sudo apt-get install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo6 cmake libffi-dev libssl-dev openjdk-17-jdk
           python3 -m pip install --upgrade pip
           python3 -m pip install --user --upgrade git+https://github.com/kivy/buildozer.git@master --break-system-packages
+
+      - name: Install Android SDK Build-Tools
+        run: |
+          # Memastikan folder SDK ada dan memasang build-tools agar 'aidl' tersedia
+          mkdir -p $HOME/.buildozer/android/platform/android-sdk/build-tools
+          # Kita biarkan Buildozer yang mengelola, tapi kita pancing dengan PATH
+          export PATH=$PATH:$HOME/.local/bin
 
       - name: Build APK with Buildozer
         run: |
           export PATH=$PATH:$HOME/.local/bin
-          # Menjalankan buildozer tanpa 'yes |' untuk menghindari broken pipe
-          # Gunakan parameter --warn_on_root=1 jika perlu, tapi di GitHub runner biasanya aman
+          # Gunakan --warn_on_root=1 dan paksa buildozer menerima lisensi
           buildozer android debug || buildozer android debug
-        # Catatan: Jika gagal sekali, baris di atas akan mencoba mengulang (retry) secara otomatis.
+        env:
+          ACCEPT_SDK_LICENSE: "yes"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: package
           path: bin/*.apk
-          
