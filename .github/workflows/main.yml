@@ -10,7 +10,6 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update
-          # Mengganti libtinfo5 dengan libtinfo6 yang lebih baru
           sudo apt-get install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo6 cmake libffi-dev libssl-dev
           python3 -m pip install --upgrade pip
           python3 -m pip install --user --upgrade git+https://github.com/kivy/buildozer.git@master --break-system-packages
@@ -18,8 +17,10 @@ jobs:
       - name: Build APK with Buildozer
         run: |
           export PATH=$PATH:$HOME/.local/bin
-          # Menjalankan buildozer secara otomatis tanpa tanya konfirmasi (yes)
-          yes | buildozer android debug
+          # Menjalankan buildozer tanpa 'yes |' untuk menghindari broken pipe
+          # Gunakan parameter --warn_on_root=1 jika perlu, tapi di GitHub runner biasanya aman
+          buildozer android debug || buildozer android debug
+        # Catatan: Jika gagal sekali, baris di atas akan mencoba mengulang (retry) secara otomatis.
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
