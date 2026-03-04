@@ -14,18 +14,26 @@ jobs:
           python3 -m pip install --upgrade pip
           python3 -m pip install --user --upgrade git+https://github.com/kivy/buildozer.git@master --break-system-packages
 
-      - name: Install Android SDK Build-Tools
+      - name: Setup Android SDK Manager
         run: |
-          # Memastikan folder SDK ada dan memasang build-tools agar 'aidl' tersedia
-          mkdir -p $HOME/.buildozer/android/platform/android-sdk/build-tools
-          # Kita biarkan Buildozer yang mengelola, tapi kita pancing dengan PATH
-          export PATH=$PATH:$HOME/.local/bin
+          # Buat struktur folder cmdline-tools secara manual
+          mkdir -p $HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest
+          # Download cmdline-tools dari Google
+          wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip commandlinetools-linux-11076708_latest.zip
+          # Pindahkan isi folder ke tempat yang dicari buildozer
+          mv cmdline-tools/* $HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/
+          
+          # Set Path agar sdkmanager bisa dieksekusi
+          export PATH=$PATH:$HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin
+          # Terima semua lisensi secara otomatis
+          yes | sdkmanager --sdk_root=$HOME/.buildozer/android/platform/android-sdk --licenses || true
 
       - name: Build APK with Buildozer
         run: |
           export PATH=$PATH:$HOME/.local/bin
-          # Gunakan --warn_on_root=1 dan paksa buildozer menerima lisensi
-          buildozer android debug || buildozer android debug
+          # Jalankan buildozer
+          buildozer android debug
         env:
           ACCEPT_SDK_LICENSE: "yes"
 
