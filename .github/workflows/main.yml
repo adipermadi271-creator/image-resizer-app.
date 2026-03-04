@@ -5,17 +5,19 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4 # Diperbarui ke v4
+      - uses: actions/checkout@v4
 
       - name: Build with Buildozer
         uses: ArtemSBulgakov/buildozer-action@v1
+        env:
+          USER: root  # TAMBAHKAN BARIS INI untuk memperbaiki error chown
         with:
           buildozer_version: master
           command: buildozer android debug
           repository_root: .
 
       - name: Upload APK
-        uses: actions/upload-artifact@v4 # INI PERBAIKANNYA (v2 ke v4)
+        uses: actions/upload-artifact@v4
         with:
           name: package
           path: bin/*.apk
