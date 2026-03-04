@@ -6,6 +6,9 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
 version = 0.1
 
+android.sdk_path = /usr/local/lib/android/sdk
+android.ndk_path = /usr/local/lib/android/sdk/ndk-bundle
+
 # Library yang dibutuhkan
 requirements = python3,kivy==2.2.1,pillow,kivymd==1.1.1
 
