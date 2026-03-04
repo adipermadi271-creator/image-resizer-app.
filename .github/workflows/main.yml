@@ -9,17 +9,17 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          sudo apt update
-          sudo apt install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+          sudo apt-get update
+          # Mengganti libtinfo5 dengan libtinfo6 yang lebih baru
+          sudo apt-get install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo6 cmake libffi-dev libssl-dev
           python3 -m pip install --upgrade pip
-          # Memaksa instalasi buildozer di Python 3.12
           python3 -m pip install --user --upgrade git+https://github.com/kivy/buildozer.git@master --break-system-packages
 
       - name: Build APK with Buildozer
         run: |
-          # Menambahkan path bin agar perintah buildozer dikenali
           export PATH=$PATH:$HOME/.local/bin
-          buildozer android debug
+          # Menjalankan buildozer secara otomatis tanpa tanya konfirmasi (yes)
+          yes | buildozer android debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
