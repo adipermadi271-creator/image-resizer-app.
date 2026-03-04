@@ -3,7 +3,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
 
@@ -27,5 +27,12 @@ jobs:
       - name: Build with Buildozer
         run: |
           export PATH=$PATH:$HOME/.local/bin
-          # Perintah 'yes' di sini hanya untuk jaga-jaga ekstra
-          yes | buildozer android debug
+          buildozer android debug
+        env:
+          ACCEPT_SDK_LICENSE: "yes"
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Aplikasi-Resize
+          path: bin/*.apk
