@@ -1,24 +1,24 @@
 [app]
-title = Pengubah Resolusi
+title = Resizer Pro
 package.name = resizerfoto
 package.domain = org.test
 source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
 version = 0.1
 
-# Persyaratan Library
-requirements = python3,kivy==2.2.1,pillow,kivymd
+# Library yang dibutuhkan
+requirements = python3,kivy==2.2.1,pillow,kivymd==1.1.1
 
 orientation = portrait
 fullscreen = 0
 android.archs = arm64-v8a, armeabi-v7a
-android.allow_backup = True
 
-# IZIN AKSES (Penting agar bisa baca galeri)
+# --- BAGIAN PENTING YANG TADI HILANG ---
+android.accept_sdk_license = True
+p4a.branch = master
+# ---------------------------------------
+
 android.permissions = READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE, MANAGE_EXTERNAL_STORAGE
-
-# Ikon Aplikasi (Opsional, jika ada file icon.png)
-#icon.filename = %(source.dir)s/icon.png
 
 [buildozer]
 log_level = 2
