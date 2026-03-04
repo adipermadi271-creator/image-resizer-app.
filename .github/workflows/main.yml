@@ -7,38 +7,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
       - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo6 cmake libffi-dev libssl-dev openjdk-17-jdk
-          python3 -m pip install --upgrade pip
-          python3 -m pip install --user --upgrade git+https://github.com/kivy/buildozer.git@master --break-system-packages
+          sudo apt-get install -y git zip unzip autoconf libtool pkg-config zlib1g-dev \
+          libncurses5-dev libncursesw5-dev libtinfo6 cmake libffi-dev libssl-dev \
+          python3-pip python3-setuptools
 
-      - name: Setup Android SDK Manager
+      - name: Install Buildozer & Cython
         run: |
-          # Buat struktur folder cmdline-tools secara manual
-          mkdir -p $HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest
-          # Download cmdline-tools dari Google
-          wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-          unzip commandlinetools-linux-11076708_latest.zip
-          # Pindahkan isi folder ke tempat yang dicari buildozer
-          mv cmdline-tools/* $HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/
-          
-          # Set Path agar sdkmanager bisa dieksekusi
-          export PATH=$PATH:$HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin
-          # Terima semua lisensi secara otomatis
-          yes | sdkmanager --sdk_root=$HOME/.buildozer/android/platform/android-sdk --licenses || true
+          python3 -m pip install --user --upgrade buildozer cython==0.29.33 --break-system-packages
 
-      - name: Build APK with Buildozer
+      - name: Build with Buildozer
         run: |
           export PATH=$PATH:$HOME/.local/bin
-          # Jalankan buildozer
-          buildozer android debug
-        env:
-          ACCEPT_SDK_LICENSE: "yes"
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: package
-          path: bin/*.apk
+          # Perintah 'yes' di sini hanya untuk jaga-jaga ekstra
+          yes | buildozer android debug
