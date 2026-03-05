@@ -32,11 +32,11 @@ class ResizerApp(MDApp):
         try:
             img = Image.open(self.path.text)
             new_size = (int(self.width_in.text), int(self.height_in.text))
-            resized = img.resize(new_size, Image.LANCZOS)
+            resized = img.resize(new_size, Image.Resampling.LANCZOS)
             resized.save("HASIL_RESIZE.jpg")
-            self.path.text = "Berhasil disimpan sebagai HASIL_RESIZE.jpg"
-        except:
-            self.path.text = "Gagal! Pastikan file ada di folder aplikasi."
+            self.path.text = "Berhasil! Tersimpan: HASIL_RESIZE.jpg"
+        except Exception as e:
+            self.path.text = f"Gagal: {str(e)}"
 
 if __name__ == "__main__":
     ResizerApp().run()
