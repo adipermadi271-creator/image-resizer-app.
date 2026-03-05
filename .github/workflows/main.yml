@@ -22,11 +22,13 @@ jobs:
 
       - name: Install Buildozer & Cython
         run: |
-          python3 -m pip install --user --upgrade buildozer cython==0.29.33 --break-system-packages
+          # Perintah instalasi tanpa --break-system-packages untuk Ubuntu 22.04
+          pip3 install --user --upgrade buildozer cython==0.29.33
 
       - name: Build with Buildozer
         run: |
           export PATH=$PATH:$HOME/.local/bin
+          # Menjalankan build secara otomatis
           buildozer android debug
         env:
           ACCEPT_SDK_LICENSE: "yes"
@@ -34,5 +36,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Aplikasi-Resize
+          name: Aplikasi-Resize-Sukses
           path: bin/*.apk
